@@ -28,7 +28,17 @@ router.get('/:id', validateProjectId(), (req, res) => {
     }) 
 });
 
-router.post('/', (req, res) => {
+router.get('/:id/actions', validateProjectId(), (req, res) => {
+    // do your magic!
+    projectDataBase.getProjectActions(req.params.id)
+    .then(projectActions => res.status(200).json(projectActions))
+    .catch(err => {
+        consolo.log(err);
+        res.status(500).json({message: "error 500"})
+    }) 
+});
+
+router.post('/', validateNewProject(), (req, res) => {
     projectDataBase.insert(req.body)
     .then(newProject => {
         res.status(200).json(newProject);
@@ -88,6 +98,22 @@ function validateProjectId(req, res, next) {
         console.log(err);
         res.status(500).json({message:' error 500'});
       })
+    }
+}
+
+function validateNewProject(req, res, next) {
+    return function (req,res,next){
+  
+      if(req.body){
+        const changes = req.body;
+    
+        if(changes.name && changes.description){
+            next();
+        } else {
+            res.status(400).json({message: "missing required name field or description"})
+        }} else {
+            res.status(400).json({message: "missing post data"})
+        }
     }
 }
 
