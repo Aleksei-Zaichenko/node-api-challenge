@@ -84,9 +84,9 @@ router.put('/:id', validateProjectId(), (req, res) => {
 function validateProjectId(req, res, next) {
     return function(req,res,next){
       
-      const postId = req.params.id;
+      const projectId = req.params.id;
   
-      projectDataBase.get(postId)
+      projectDataBase.get(projectId)
       .then(foundProject => {
         if(foundProject){
           next();
